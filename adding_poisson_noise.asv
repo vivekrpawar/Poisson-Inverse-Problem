@@ -1,0 +1,36 @@
+
+image = imread("barbara256.png");  
+% Get the size of the image
+[height, width, ~] = size(image);
+image = im2double(image);  
+
+noisy_image = corruptWithPoissonNoise(image);
+beta = 1;
+lambda = 0.25;
+var = var(nois)
+sigma = sqrt(var(noisy_image(:)));
+y = BM3D(noisy_image, sigma);
+
+figure;
+subplot(1, 2, 1);
+imshow(image, []);
+subplot(1, 2, 2);
+imshow(y, []);
+function noisyImage = corruptWithPoissonNoise(image)
+  % Ensure image is in uint8 format (0-255)
+  if ~isa(image, 'uint8')
+    image = im2uint8(image);
+  end
+
+  % Get the dimensions of the image
+  [rows, cols] = size(image);
+
+  % Convert image to double for calculations (avoid overflow)
+  doubleImage = double(image);
+
+  % Generate Poisson noise with mean as each pixel value
+  poissonNoise = poissrnd(doubleImage);
+
+  % Clip noise values to the valid image range (0-255)
+  noisyImage = uint8(min(max(poissonNoise, 0), 255));
+end
